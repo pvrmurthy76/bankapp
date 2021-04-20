@@ -1,0 +1,4 @@
+create account url - http://localhost:9000/fundme-api/account/create
+transfer amount url - http://localhost:9000/fundme-api/account/transfer/amount
+current balance checking url - http://localhost:9000/fundme-api/account/currentbalance?accountnumber=
+retrive accounts whose balance is greater or equal to - http://localhost:9000/fundme-api/account/getaccounts?balance=50

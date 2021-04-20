@@ -1,0 +1,21 @@
+{
+    "name" :"Test1",
+    "contactNumber": "9885820653",
+    "accountNumber":5678,
+	"accountStatus": "Active",
+	"accountType": "Savings",
+	"balance": 100,
+	"accountCreated": "2021-04-19T14:00:00",
+	"bankInformation":{
+		"branchName": "ICICI",
+		"branchCode": "630",
+		"branchAddress" : {
+			"address1" :"abc",
+			"address2": "def",
+			"city": "hyderabad",
+			"state": "telangana",
+			"zip": "500004",
+			"country": "India"
+		}
+	}
+}

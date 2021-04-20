@@ -3,6 +3,7 @@ package com.abcbank.bankapp.service.util;
 import com.abcbank.bankapp.model.*;
 import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
 import com.abcbank.bankapp.wsapi.restfule.vo.AddressInformation;
+import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
 import com.abcbank.bankapp.wsapi.restfule.vo.BankInformation;
 import org.springframework.stereotype.Component;
 
@@ -65,13 +66,35 @@ public class WSToEntityConverter {
     public List<AccountInformation> convertToAccountInformation(List<Account> accounts) {
         List<AccountInformation> accountInformations = new ArrayList<>();
         for(Account account: accounts) {
-            AccountInformation acct = new AccountInformation();
-            acct.setAccountNumber(account.getAccountNumber());
-            acct.setAccountStatus(account.getAccountStatus());
-            acct.setAccountType(account.getAccountType());
-            acct.setBalance(account.getBalance());
-            accountInformations.add(acct);
+            accountInformations.add(accountEntityToAccountInformation(account));
         }
         return accountInformations;
+    }
+
+    public AccountInformation accountEntityToAccountInformation(Account account) {
+        AccountInformation acct = new AccountInformation();
+        acct.setAccountNumber(account.getAccountNumber());
+        acct.setAccountStatus(account.getAccountStatus());
+        acct.setAccountType(account.getAccountType());
+        acct.setBalance(account.getBalance());
+        return acct;
+    }
+
+    public Transaction createDebitTransaction(AmountTransfer amountTransfer) {
+        Transaction transaction = new Transaction();
+        transaction.setAccountNumber(amountTransfer.getFromAccountNumber());
+        transaction.setTransactionAmount(amountTransfer.getAmount());
+        transaction.setTransactionDateTime(new Date());
+        transaction.setTransactionType("DEBIT");
+        return transaction;
+    }
+
+    public Transaction createCreditTransaction(AmountTransfer amountTransfer) {
+        Transaction transaction = new Transaction();
+        transaction.setAccountNumber(amountTransfer.getToAccountNumber());
+        transaction.setTransactionAmount(amountTransfer.getAmount());
+        transaction.setTransactionDateTime(new Date());
+        transaction.setTransactionType("CREDIT");
+        return transaction;
     }
 }

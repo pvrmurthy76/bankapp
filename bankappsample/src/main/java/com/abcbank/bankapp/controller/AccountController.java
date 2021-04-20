@@ -7,6 +7,7 @@ import com.abcbank.bankapp.service.BankingServiceImpl;
 import java.util.List;
 
 import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
+import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,26 @@ public class AccountController {
     @Autowired
     BankingServiceImpl bankingService;
 
-    @GetMapping("/getAccounts")
-    public List<AccountInformation> getAllAccounts(@RequestParam Double balance)
+    @GetMapping("/getaccounts")
+    public List<AccountInformation> getAccountsGreaterThan(@RequestParam(value="balance", required = true) Double balance)
     {
         return bankingService.getAccountDetails(balance);
     }
 
-    @PostMapping(path = "/add")
+    @GetMapping("/currentbalance")
+    public AccountInformation getCurrentBalance(@RequestParam(value="accountnumber",required = true) Long accountnumber)
+    {
+        return bankingService.getCurrentBalance(accountnumber);
+    }
+
+
+    @PostMapping("/create")
     public ResponseEntity<Object> addNewAccount(@RequestBody AccountInformation accountInformation ) {
           return bankingService.createNewAccount(accountInformation);
+    }
+
+    @PutMapping("/transfer/amount")
+    public ResponseEntity<Object> transfer(@RequestBody AmountTransfer amountTransfer ) {
+        return bankingService.transferAmount(amountTransfer);
     }
 }
