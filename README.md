@@ -1,4 +1,4 @@
-# Sample Banking Application using Java8, Spring Boot H2 DB
+# Sample Banking Application using Java8, Spring Boot, H2 DB
 
 RESTful API to simulate simple banking operations. 
 
@@ -74,7 +74,7 @@ http://localhost:8989/bank-api/h2-console/
 1. Browse to <project-root>/src/test/resources to find sample requests and urls for the same.
 
 
-## Authors
+## Author
 
 * **Ramamurthy**
 
