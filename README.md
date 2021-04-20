@@ -72,6 +72,7 @@ http://localhost:8989/bank-api/h2-console/
 ## Testing the FundmeBank App Rest Api
 
 1. Browse to <project-root>/src/test/resources to find sample requests and urls for the same.
+2. In order to save customer and account data in a file as well enable the flag saveinfile to true available in application properties file.
 
 
 ## Author
