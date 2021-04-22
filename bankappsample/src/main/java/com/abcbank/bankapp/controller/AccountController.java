@@ -8,9 +8,13 @@ import java.util.List;
 
 import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
 import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
+import com.abcbank.bankapp.wsapi.restfule.vo.TransactionDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("account")
@@ -33,12 +37,18 @@ public class AccountController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<Object> addNewAccount(@RequestBody AccountInformation accountInformation ) {
+    public ResponseEntity<Object> addNewAccount(@Valid @RequestBody AccountInformation accountInformation ) {
           return bankingService.createNewAccount(accountInformation);
     }
 
-    @PutMapping("/transfer/amount")
+    @PutMapping("/transfer/otheraccount")
     public ResponseEntity<Object> transfer(@RequestBody AmountTransfer amountTransfer ) {
-        return bankingService.transferAmount(amountTransfer);
+            return bankingService.transferAmount(amountTransfer);
     }
+
+    @PutMapping("/transfer/amount")
+    public ResponseEntity<Object> transfer(@RequestBody TransactionDetails transactionDetails ) {
+            return bankingService.crdbTransaction(transactionDetails);
+    }
+
 }
