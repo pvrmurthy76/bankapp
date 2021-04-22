@@ -1,5 +1,6 @@
 package com.abcbank.bankapp.service;
 
+import antlr.StringUtils;
 import com.abcbank.bankapp.config.ApplicationConfig;
 import com.abcbank.bankapp.model.Account;
 import com.abcbank.bankapp.model.Customer;
@@ -8,6 +9,7 @@ import com.abcbank.bankapp.repository.AccountRepository;
 import com.abcbank.bankapp.repository.CustomerAccountRepository;
 import com.abcbank.bankapp.repository.CustomerRepository;
 import com.abcbank.bankapp.repository.TransactionRepository;
+import com.abcbank.bankapp.service.util.TransactionType;
 import com.abcbank.bankapp.service.util.WSToEntityConverter;
 import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
 
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
+import com.abcbank.bankapp.wsapi.restfule.vo.TransactionDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,7 +99,6 @@ public class BankingServiceImpl {
         if(frmAccountOpt.isPresent() && toAccountOpt.isPresent()) {
             Account frmAccount = frmAccountOpt.get();
             Account toAccount = toAccountOpt.get();
-
             if(frmAccount.getBalance() < amountTransfer.getAmount()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Funds.");
             } else {
@@ -121,7 +123,40 @@ public class BankingServiceImpl {
         }
 
     }
+    @Transactional
+    public ResponseEntity<Object> crdbTransaction(TransactionDetails transactionDetails) {
+        Optional<Account> accountNumberOpt = accountRepository.findByAccountNumber(transactionDetails.getAccountNumber());
+        Double balance=0.0;
+        if(accountNumberOpt.isPresent()) {
+            Account account = accountNumberOpt.get();
+            if((transactionDetails.getTransactionType()==TransactionType.DEBIT )
+                    && account.getBalance() < transactionDetails.getAmount()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Funds.");
+            } else {
+                switch(transactionDetails.getTransactionType()){
+                    case DEBIT:
+                        balance = account.getBalance() - transactionDetails.getAmount();
+                        break;
+                    case CREDIT:
+                        balance = account.getBalance() + transactionDetails.getAmount();
+                        break;
+                }
+                account.setBalance(balance);
+                account.setUpdatedDateTime(new Date());
+                accountRepository.save(account);
+                Transaction transaction = converter.convertTransactionDetailsToTransaction(transactionDetails);
+                transactionRepository.save(transaction);
+                return ResponseEntity.status(HttpStatus.OK).body("Amount transferred Successfully ");
+            }
+        }else {
+            String errorMsg = "";
+            if(accountNumberOpt.isEmpty()) {
+                errorMsg ="Account number not found";
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
+        }
 
+    }
     private void writeToFile(Customer customer, Account account) throws IOException {
         Path customerPath = Paths.get(config.getFilePath(),config.getCustomerFile().trim());
         Path accountPath = Paths.get(config.getFilePath(),config.getAccountFile().trim());
