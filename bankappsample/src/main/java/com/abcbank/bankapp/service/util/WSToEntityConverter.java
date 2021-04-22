@@ -1,10 +1,7 @@
 package com.abcbank.bankapp.service.util;
 
 import com.abcbank.bankapp.model.*;
-import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
-import com.abcbank.bankapp.wsapi.restfule.vo.AddressInformation;
-import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
-import com.abcbank.bankapp.wsapi.restfule.vo.BankInformation;
+import com.abcbank.bankapp.wsapi.restfule.vo.*;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.ManyToOne;
@@ -80,12 +77,21 @@ public class WSToEntityConverter {
         return acct;
     }
 
+    public Transaction convertTransactionDetailsToTransaction(TransactionDetails transactionDetails) {
+        Transaction transaction = new Transaction();
+        transaction.setAccountNumber(transactionDetails.getAccountNumber());
+        transaction.setTransactionAmount(transactionDetails.getAmount());
+        transaction.setTransactionDateTime(new Date());
+        transaction.setTransactionType(transactionDetails.getTransactionType());
+        return transaction;
+    }
+
     public Transaction createDebitTransaction(AmountTransfer amountTransfer) {
         Transaction transaction = new Transaction();
         transaction.setAccountNumber(amountTransfer.getFromAccountNumber());
         transaction.setTransactionAmount(amountTransfer.getAmount());
         transaction.setTransactionDateTime(new Date());
-        transaction.setTransactionType("DEBIT");
+        transaction.setTransactionType(TransactionType.DEBIT);
         return transaction;
     }
 
@@ -94,7 +100,7 @@ public class WSToEntityConverter {
         transaction.setAccountNumber(amountTransfer.getToAccountNumber());
         transaction.setTransactionAmount(amountTransfer.getAmount());
         transaction.setTransactionDateTime(new Date());
-        transaction.setTransactionType("CREDIT");
+        transaction.setTransactionType(TransactionType.CREDIT);
         return transaction;
     }
 }
