@@ -6,6 +6,7 @@ import com.abcbank.bankapp.wsapi.restfule.vo.AccountInformation;
 import java.util.List;
 
 import com.abcbank.bankapp.wsapi.restfule.vo.AmountTransfer;
+import com.abcbank.bankapp.wsapi.restfule.vo.TransactionDetails;
 import org.springframework.http.ResponseEntity;
 
 public interface BankingService {
@@ -17,4 +18,7 @@ public interface BankingService {
     public List<AccountInformation> getAccountDetails(Double balance);
 
     public ResponseEntity<Object> transferAmount(AmountTransfer amountTransfer);
+
+    public ResponseEntity<Object> crdbTransaction(TransactionDetails transactionDetails);
+
 }
